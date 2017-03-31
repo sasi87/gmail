@@ -4,7 +4,7 @@ module Gmail
   module Client
     class Base
       # Gmail IMAP defaults
-      GMAIL_IMAP_HOST = 'imap.gmail.com'
+      GMAIL_IMAP_HOST = 'outlook.office365.com'
       GMAIL_IMAP_PORT = 993
 
       # Gmail SMTP defaults

@@ -130,9 +130,12 @@ module Gmail
     # TODO: We should probably deprecate this method. It doesn't really add a lot
     #       of value, especially since the concept of "moving" a message from one
     #       label to another doesn't totally make sense in the Gmail world.
-    def move_to(name, from = nil)
-      add_label(name)
-      remove_label(from) if from
+    def move_to(target_mailbox)
+      imap = @gmail.conn
+      imap.select("INBOX")
+      imap.uid_store( @uid, "+FLAGS", [Net::IMAP::SEEN])
+      imap.uid_copy(@uid, target_mailbox)
+      imap.expunge
     end
     alias_method :move, :move_to
     alias_method :move!, :move_to
@@ -183,6 +186,29 @@ module Gmail
       end
     end
 
+    def from
+      @gmail.conn.uid_fetch(@uid, "ENVELOPE").first.attr["ENVELOPE"].from
+    end
+
+    def subject
+      @gmail.conn.uid_fetch(@uid, "ENVELOPE").first.attr["ENVELOPE"].subject
+    end
+
+    def date 
+      @gmail.conn.uid_fetch(@uid, "ENVELOPE").first.attr["ENVELOPE"].date
+    end
+    def flags
+      @gmail.conn.uid_fetch(@uid, "FLAGS")
+    end
+
+    def attachments
+      Mail.read_from_string(@gmail.conn.uid_fetch(@uid, "BODY[]").first.attr["BODY[]"]).attachments
+    end
+
+    def body
+      Mail.read_from_string(@gmail.conn.uid_fetch(@uid, "BODY[]").first.attr["BODY[]"]).body
+    end
+
     private
 
     def clear_cached_attributes
@@ -203,5 +229,6 @@ module Gmail
       end
       @_attrs.attr[value]
     end
+
   end # Message
 end # Gmail
