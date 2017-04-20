@@ -133,9 +133,7 @@ module Gmail
     def move_to(target_mailbox)
       imap = @gmail.conn
       imap.select("INBOX")
-      imap.uid_store( @uid, "+FLAGS", [Net::IMAP::SEEN])
-      imap.uid_copy(@uid, target_mailbox)
-      imap.expunge
+      imap.uid_move(@uid, target_mailbox)
     end
     alias_method :move, :move_to
     alias_method :move!, :move_to
@@ -194,9 +192,10 @@ module Gmail
       @gmail.conn.uid_fetch(@uid, "ENVELOPE").first.attr["ENVELOPE"].subject
     end
 
-    def date 
+    def date
       @gmail.conn.uid_fetch(@uid, "ENVELOPE").first.attr["ENVELOPE"].date
     end
+
     def flags
       @gmail.conn.uid_fetch(@uid, "FLAGS")
     end

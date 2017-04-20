@@ -50,17 +50,6 @@ module Gmail
       client = Gmail::Client.new(*args)
       client.connect
       client.login
-      imap = client.conn
-      existing_mailbox = imap.list("", "INBOX/%")
-      ([
-        "INBOX/Processed",
-        "INBOX/Unprocessed",
-        "INBOX/ProcessingError",
-        "INBOX/DownloadRequired"
-      ] - (existing_mailbox.nil? ? [] : existing_mailbox.map(&:name))).each do |mb|
-        imap.create(mb)
-      end
-
       check_with_block(client, &block)
     end
     alias_method :connect, :new
@@ -70,18 +59,6 @@ module Gmail
       client = Gmail::Client.new(*args)
       client.connect!
       client.login!
-
-      imap = client.conn
-      existing_mailbox = imap.list("", "INBOX/%")
-      ([
-        "INBOX/Processed",
-        "INBOX/Unprocessed",
-        "INBOX/ProcessingError",
-        "INBOX/DownloadRequired"
-      ] - (existing_mailbox.nil? ? [] : existing_mailbox.map(&:name))).each do |mb|
-        imap.create(mb)
-      end
-
       check_with_block(client, &block)
     end
     alias_method :connect!, :new!
