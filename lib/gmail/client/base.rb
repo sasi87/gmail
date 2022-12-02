@@ -8,7 +8,7 @@ module Gmail
       GMAIL_IMAP_PORT = 993
 
       # Gmail SMTP defaults
-      GMAIL_SMTP_HOST = "smtp.gmail.com"
+      GMAIL_SMTP_HOST = "outlook.office365.com"
       GMAIL_SMTP_PORT = 587
 
       attr_reader :username
